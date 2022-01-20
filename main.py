@@ -3,23 +3,25 @@ from pathlib import Path
 import shutil
 
 
-def copy_and_change_image_name(origin_dir, img_dir):
+def copy_and_change_image_name(origin_dir, img_dir, num):
     cwd = Path.cwd()
     images = (cwd / origin_dir).glob('*.*')
-    for i in images:
-        img_name = i.name.split('.')[0]
-        img_suffix = i.name.split('.')[1]
+    li_img = list(images)
+    for n in range(num):
+        for i in li_img:
+            img_name = i.name.split('.')[0]
+            img_suffix = i.name.split('.')[1]
 
-        new_name = cwd / img_dir / (img_name + f"_coco128_bg5.{img_suffix}")
-        # os.rename(i, new_name)
-        shutil.copy(i, new_name)
+            new_name = cwd / img_dir / (img_name + f"_coco128_bg{n}.{img_suffix}")
+            # os.rename(i, new_name)
+            shutil.copy(i, new_name)
 
 def get_blank_txt_label(img_dir, label_dir):
     cwd = Path.cwd()
     images = (cwd / img_dir).glob('*.*')
     for i in images:
         parent = i.parent
-        img_name = i.name.split(".")[0]
+        img_name = i.stem
         txt_save_path = cwd / label_dir / f"{img_name}.txt"
         Path(txt_save_path).touch()
 
@@ -39,12 +41,12 @@ if __name__ == '__main__':
     flag = False
 
     if flag:
-        origin_dir = "images_without_motorbike/images_ori"
-        dest_dir = "images_without_motorbike/images"
-        copy_and_change_image_name(origin_dir, dest_dir)
+        origin_dir = "images_without_helmet/images_ori"
+        dest_dir = "images_without_helmet/images"
+        copy_and_change_image_name(origin_dir, dest_dir, 6)
     else:
-        img_dir = "images_without_motorbike/images"
-        label_dir = "images_without_motorbike/labels"
-        # get_blank_txt_label(img_dir, label_dir)
+        img_dir = "images_without_helmet/images"
+        label_dir = "images_without_helmet/labels"
+        get_blank_txt_label(img_dir, label_dir)
         get_trainlist_txt(img_dir)
 
